@@ -1,0 +1,18 @@
+1.问题一:在文件权限已授权的情况下编译apk安装到红米10
+Android ffmpeg avformat_open_input Permission denied.
+文件路径没问题问题。
+解决方式:
+把app/build.gradle
+ compileSdkVersion 29 -> 改成28
+
+ targetSdkVersion 29 -> 改成28
+
+2.问题二 播放花屏
+坚持源数据和转换目标数据是否对齐
+  uint8_t *dst_data[4];//rgbA
+    int dst_linesize[4];//一行数据
+    av_image_alloc(dst_data,dst_linesize,codecContext->width,codecContext->height,
+            AV_PIX_FMT_RGBA,1);
+3.播放一段时间后，程序崩溃
+
+4.android studio C++ 模板函数调用问题
