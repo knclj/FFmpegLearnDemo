@@ -92,7 +92,15 @@ Java_com_clj_ffmpeglearndemo_NativePlayer_stopNative(JNIEnv *env, jobject thiz) 
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_clj_ffmpeglearndemo_NativePlayer_releaseNative(JNIEnv *env, jobject thiz) {
-    // TODO: implement releaseNative()
+   //window release
+   pthread_mutex_lock(&mutex);
+    if(window){
+        ANativeWindow_release(window);
+        window = 0;
+    }
+   pthread_mutex_unlock(&mutex);
+    DELETE(player);
+    DELETE(vm);
 }
 
 extern "C"

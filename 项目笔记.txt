@@ -16,3 +16,32 @@ Android ffmpeg avformat_open_input Permission denied.
 3.播放一段时间后，程序崩溃
 
 4.android studio C++ 模板函数调用问题
+
+5.stop 时候异常问题
+A/libc: FORTIFY: pthread_mutex_lock called on a destroyed mutex (0xdb889de4)
+A/libc: Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 31070 (Thread-2), pid 31027 (ffmpeglearndemo)
+A/libc: FORTIFY: pthread_mutex_lock called on a destroyed mutex (0xdb879c04)
+A/libc: FORTIFY: pthread_mutex_lock called on a destroyed mutex (0xdb889e10)
+E/Surface: dequeueBuffer failed (No such device)
+A/libc: FORTIFY: pthread_mutex_lock called on a destroyed mutex (0xdb879c30)
+
+adb logcat | ./ndk-stack -sym /Users/jsoncai/AndroidStudioProjects/FFmpegLearnDemo/app/build/intermediates/cmake/debug/obj/armeabi-v7a
+********** Crash dump: **********
+Build fingerprint: 'Redmi/gauguinpro/gauguinpro:10/QKQ1.200628.002/V12.0.11.0.QJSCNXM:user/release-keys'
+Abort message: 'FORTIFY: pthread_mutex_lock called on a destroyed mutex (0xdb889de4)'
+#00 0x000614de /apex/com.android.runtime/lib/bionic/libc.so (abort+166) (BuildId: 8447fcf1d3991c2dbf099fab8745f81f)
+#01 0x000ad76b /apex/com.android.runtime/lib/bionic/libc.so (__fortify_fatal(char const*, ...)+34) (BuildId: 8447fcf1d3991c2dbf099fab8745f81f)
+#02 0x000acf59 /apex/com.android.runtime/lib/bionic/libc.so (HandleUsingDestroyedMutex(pthread_mutex_t*, char const*)+20) (BuildId: 8447fcf1d3991c2dbf099fab8745f81f)
+#03 0x000ace3d /apex/com.android.runtime/lib/bionic/libc.so (pthread_mutex_lock+136) (BuildId: 8447fcf1d3991c2dbf099fab8745f81f)
+#04 0x000d9543 /data/app/com.clj.ffmpeglearndemo-4loFbfR97lIFdnXniMY5zQ==/lib/arm/libnative-lib.so (SafeQueue<AVPacket*>::getQueueAndDel(AVPacket*&)+24) (BuildId: ec4a9b9f5cd23be46325bebc45c343ff98d70ba0)
+                                                                                                    SafeQueue<AVPacket*>::getQueueAndDel(AVPacket*&)
+                                                                                                    /Users/jsoncai/AndroidStudioProjects/FFmpegLearnDemo/app/src/main/cpp/SafeQueue.h:51:9
+#05 0x000d8f99 /data/app/com.clj.ffmpeglearndemo-4loFbfR97lIFdnXniMY5zQ==/lib/arm/libnative-lib.so (AudioChannel::decode()+68) (BuildId: ec4a9b9f5cd23be46325bebc45c343ff98d70ba0)
+                                                                                                    AudioChannel::decode()
+                                                                                                    /Users/jsoncai/AndroidStudioProjects/FFmpegLearnDemo/app/src/main/cpp/AudioChannel.cpp:86:27
+#06 0x000d8f4b /data/app/com.clj.ffmpeglearndemo-4loFbfR97lIFdnXniMY5zQ==/lib/arm/libnative-lib.so (task_audio_decode(void*)+14) (BuildId: ec4a9b9f5cd23be46325bebc45c343ff98d70ba0)
+                                                                                                    task_audio_decode(void*)
+                                                                                                    /Users/jsoncai/AndroidStudioProjects/FFmpegLearnDemo/app/src/main/cpp/AudioChannel.cpp:48:14
+#07 0x000ac4ed /apex/com.android.runtime/lib/bionic/libc.so (__pthread_start(void*)+20) (BuildId: 8447fcf1d3991c2dbf099fab8745f81f)
+#08 0x00062989 /apex/com.android.runtime/lib/bionic/libc.so (__start_thread+30) (BuildId: 8447fcf1d3991c2dbf099fab8745f81f)
+Crash dump is completed

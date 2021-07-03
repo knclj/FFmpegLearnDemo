@@ -168,8 +168,21 @@ void NativePlayer::setRenderCallback(RenderCallback callback) {
     this->renderCallback = callback;
 }
 
+void* task_stop(void* args){
+    NativePlayer* player = static_cast<NativePlayer *>(args);
+    player->stop_(player);
+    return nullptr;
+}
+
 void NativePlayer::stop() {
     helper = nullptr;
+    if(audioChannel){
+        audioChannel->setJNICallbakcHelper(nullptr);
+    }
+    if(videoChannel){
+        videoChannel->setJNICallbakcHelper(nullptr);
+    }
+    pthread_create(&pid_stop, nullptr,task_stop,this);
 }
 
 int NativePlayer::getDuration() {
@@ -211,5 +224,33 @@ void NativePlayer::seek(int progress) {
     }
 
     pthread_mutex_unlock(&seek_mutex);
+
+}
+
+void NativePlayer::stop_(NativePlayer* player) {
+    isPlaying = false;
+    //等待编码解码线程完成
+    pthread_join(pid_prepare,nullptr);
+    pthread_join(pid_start,nullptr);
+
+    if(videoChannel){
+        videoChannel->packets.setWork(0);
+        videoChannel->frames.setWork(0);
+        videoChannel->packets.clear();
+        videoChannel->frames.clear();
+    }
+    if(audioChannel){
+        audioChannel->packets.setWork(0);
+        audioChannel->frames.setWork(0);
+        audioChannel->packets.clear();
+        audioChannel->frames.clear();
+    }
+    if(formatContext){
+        avformat_close_input(&formatContext);
+        avformat_free_context(formatContext);
+        formatContext = nullptr;
+    }
+    DELETE(audioChannel);
+    DELETE(videoChannel);
 
 }

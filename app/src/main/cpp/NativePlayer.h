@@ -26,6 +26,7 @@ private:
     RenderCallback renderCallback;
     int duration = 0;
     pthread_mutex_t seek_mutex;
+    pthread_t  pid_stop;
 
 
 public:
@@ -43,6 +44,8 @@ public:
     int getDuration();
 
     void seek(int progress);
+
+    void stop_(NativePlayer* player);
 };
 
 

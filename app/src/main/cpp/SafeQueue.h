@@ -48,6 +48,9 @@ public:
      */
     int getQueueAndDel(T &value) {
         int ret = 0;
+        if(!work){
+            return ret;
+        }
         pthread_mutex_lock(&mutex);
 
         while(work && queue.empty()){
