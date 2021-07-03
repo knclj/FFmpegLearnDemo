@@ -71,6 +71,10 @@ public class NativePlayer implements SurfaceHolder.Callback {
 
     }
 
+    public int getDuration() {
+        return getDurationNative();
+    }
+
     public interface OnPreparedListener {
         void onPrepared();
 
@@ -150,6 +154,8 @@ public class NativePlayer implements SurfaceHolder.Callback {
     private native void releaseNative();
 
     private native void setSufaceNative(Surface suface);
+
+    private native int getDurationNative();
 
 
 }

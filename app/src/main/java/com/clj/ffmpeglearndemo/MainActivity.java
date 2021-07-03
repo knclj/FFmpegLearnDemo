@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,12 +19,17 @@ import java.io.File;
 
 import io.reactivex.functions.Consumer;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "MainActivity";
 
     private NativePlayer player;
     private TextView stateTv;
     private SurfaceView mSurfaceView;
+
+    private TextView timeTv;
+    private SeekBar seekBar;
+    private boolean isTouch;
+    private int duration;//获取视频的总长度
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         stateTv = findViewById(R.id.tv_state);
         mSurfaceView = findViewById(R.id.surfaceView);
+        timeTv = findViewById(R.id.tv_time);
+        seekBar = findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(this);
         Log.d(TAG,NativePlayer.stringFromJNI());
         initNativePlayer();
         checkPermissionRequest(this);
@@ -63,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         player.setListener(new NativePlayer.OnPreparedListener() {
             @Override
             public void onPrepared() {
+                duration = player.getDuration();
                 runOnUiThread(() -> {
                     stateTv.setTextColor(Color.GREEN); // 绿色
                     stateTv.setText("恭喜init初始化成功");
@@ -101,5 +111,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        isTouch = true;
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        isTouch = false;
     }
 }

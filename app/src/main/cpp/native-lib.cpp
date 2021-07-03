@@ -84,14 +84,18 @@ Java_com_clj_ffmpeglearndemo_NativePlayer_startNative(JNIEnv *env, jobject thiz)
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_clj_ffmpeglearndemo_NativePlayer_stopNative(JNIEnv *env, jobject thiz) {
-    // TODO: implement stopNative()
+   if(player){
+       player->stop();
+   }
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_clj_ffmpeglearndemo_NativePlayer_releaseNative(JNIEnv *env, jobject thiz) {
     // TODO: implement releaseNative()
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT void JNICALL
 Java_com_clj_ffmpeglearndemo_NativePlayer_setSufaceNative(JNIEnv *env, jobject thiz, jobject suface) {
     pthread_mutex_lock(&mutex);
@@ -103,4 +107,12 @@ Java_com_clj_ffmpeglearndemo_NativePlayer_setSufaceNative(JNIEnv *env, jobject t
     //然后将数据填充到window进行渲染界面
     window = ANativeWindow_fromSurface(env,suface);
     pthread_mutex_unlock(&mutex);
+}
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_clj_ffmpeglearndemo_NativePlayer_getDurationNative(JNIEnv *env, jobject thiz) {
+    if(player){
+        return player->getDuration();
+    }
+    return 0;
 }

@@ -24,6 +24,7 @@ private:
     AudioChannel* audioChannel = 0;
     bool isPlaying;
     RenderCallback renderCallback;
+    int duration = 0;
 
 
 public:
@@ -36,6 +37,9 @@ public:
     void setRenderCallback(RenderCallback callback);
 
 
+    void stop();
+
+    int getDuration();
 };
 
 

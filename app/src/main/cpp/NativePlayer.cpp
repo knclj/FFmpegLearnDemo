@@ -35,6 +35,9 @@ void NativePlayer::prepare_() {
         return;
     }
 
+    //缓冲视频长度
+    this->duration = formatContext->duration/AV_TIME_BASE;
+
     for (int i = 0; i < formatContext->nb_streams; ++i) {
        AVStream *stream = formatContext->streams[i];
        AVCodecParameters*  parameters = stream->codecpar;
@@ -159,4 +162,12 @@ void NativePlayer::start_() {
 
 void NativePlayer::setRenderCallback(RenderCallback callback) {
     this->renderCallback = callback;
+}
+
+void NativePlayer::stop() {
+    helper = nullptr;
+}
+
+int NativePlayer::getDuration() {
+    return duration;
 }
