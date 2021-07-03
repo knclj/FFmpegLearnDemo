@@ -25,6 +25,7 @@ private:
     bool isPlaying;
     RenderCallback renderCallback;
     int duration = 0;
+    pthread_mutex_t seek_mutex;
 
 
 public:
@@ -40,6 +41,8 @@ public:
     void stop();
 
     int getDuration();
+
+    void seek(int progress);
 };
 
 

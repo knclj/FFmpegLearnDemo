@@ -115,8 +115,14 @@ Java_com_clj_ffmpeglearndemo_NativePlayer_getDurationNative(JNIEnv *env, jobject
         return player->getDuration();
     }
     return 0;
-}extern "C"
+}
+
+extern "C"
 JNIEXPORT void JNICALL
 Java_com_clj_ffmpeglearndemo_NativePlayer_seekNative(JNIEnv *env, jobject thiz, jint progress) {
+
+    if(player){
+        player->seek(progress);
+    }
 
 }

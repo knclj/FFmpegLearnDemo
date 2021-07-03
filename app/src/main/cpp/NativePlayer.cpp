@@ -4,6 +4,7 @@ NativePlayer::NativePlayer(const char *data_source, JNICallbackHelper* helper) :
     this->data_source = new char[strlen(data_source)+1];
     strcpy(this->data_source,data_source);
     this->helper = helper;
+    pthread_mutex_init(&seek_mutex, nullptr);
 }
 
 void * task_prepare(void *args){
@@ -95,6 +96,7 @@ NativePlayer::~NativePlayer() {
         delete data_source;
         data_source = nullptr;
     }
+    pthread_mutex_destroy(&seek_mutex);
 }
 
 void NativePlayer::prepare() {
@@ -172,4 +174,42 @@ void NativePlayer::stop() {
 
 int NativePlayer::getDuration() {
     return duration;
+}
+
+void NativePlayer::seek(int progress) {
+    if(progress<0 || progress > this->duration){
+        return;
+    }
+    if(!audioChannel && !videoChannel){
+        return;
+    }
+    if(!formatContext){
+        return;
+    }
+    pthread_mutex_lock(&seek_mutex);
+    int ret = av_seek_frame(formatContext,-1,progress*AV_TIME_BASE,AVSEEK_FLAG_FRAME);
+    if(ret < 0){
+        return;
+    }
+
+    if(videoChannel){
+        videoChannel->packets.setWork(0);
+        videoChannel->frames.setWork(0);
+        videoChannel->packets.clear();
+        videoChannel->frames.clear();
+        videoChannel->packets.setWork(1);
+        videoChannel->frames.setWork(1);
+    }
+
+    if(audioChannel){
+        audioChannel->packets.setWork(0);
+        audioChannel->frames.setWork(0);
+        audioChannel->packets.clear();
+        audioChannel->frames.clear();
+        audioChannel->packets.setWork(1);
+        audioChannel->frames.setWork(1);
+    }
+
+    pthread_mutex_unlock(&seek_mutex);
+
 }
