@@ -7,6 +7,7 @@ JNICallbackHelper::JNICallbackHelper(JavaVM *javaVm, JNIEnv *env, jobject jobj) 
     jclass clazz = env->GetObjectClass(jobj);
     jmd_prepared = env->GetMethodID(clazz,"onPrepared","()V");
     jerrorMethodId  = env->GetMethodID(clazz,"onError","(I)V");
+    jprogressMethodId = env->GetMethodID(clazz,"onProgress","(I)V");
 }
 
 JNICallbackHelper::~JNICallbackHelper() {
@@ -40,4 +41,17 @@ void JNICallbackHelper::onError(int thread_mode, int error_code) {
         childEnv->CallVoidMethod(job,jerrorMethodId,error_code);
         this->vm->DetachCurrentThread();
     }
+}
+
+void JNICallbackHelper::onProgress(int thread_mode, int progress) {
+
+    if(thread_mode == THREAD_MAIN){
+        env->CallVoidMethod(job,jprogressMethodId,progress);
+    } else if(thread_mode == THREAD_CHILD){
+        JNIEnv * childEnv;
+        this->vm->AttachCurrentThread(&childEnv,0);
+        childEnv->CallVoidMethod(job,jprogressMethodId,progress);
+        this->vm->DetachCurrentThread();
+    }
+
 }

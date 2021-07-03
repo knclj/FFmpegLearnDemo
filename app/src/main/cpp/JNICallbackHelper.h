@@ -11,11 +11,13 @@ private:
     jobject  job;
     jmethodID  jmd_prepared;
     jmethodID  jerrorMethodId;
+    jmethodID  jprogressMethodId;
 public:
     JNICallbackHelper(JavaVM *javaVm,JNIEnv *env,jobject jobj);
     virtual ~JNICallbackHelper();
     void onPrepared(int thread_mode);
     void onError(int thread_mode,int error_code);
+    void onProgress(int thread_mod,int progress);
 };
 
 

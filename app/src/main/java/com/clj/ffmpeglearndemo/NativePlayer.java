@@ -47,6 +47,7 @@ public class NativePlayer implements SurfaceHolder.Callback {
 
     private OnPreparedListener listener;
     private OnErrorListener onErrorListener;
+    private OnProgressListener onProgressListener;
 
     public void setListener(OnPreparedListener listener) {
         this.listener = listener;
@@ -54,6 +55,10 @@ public class NativePlayer implements SurfaceHolder.Callback {
 
     public void setOnErrorListener(OnErrorListener onErrorListener) {
         this.onErrorListener = onErrorListener;
+    }
+
+    public void setOnProgressListener(OnProgressListener onProgressListener) {
+        this.onProgressListener = onProgressListener;
     }
 
     @Override
@@ -75,12 +80,20 @@ public class NativePlayer implements SurfaceHolder.Callback {
         return getDurationNative();
     }
 
+    public void seek(int playProgress) {
+        seekNative(playProgress);
+    }
+
     public interface OnPreparedListener {
         void onPrepared();
 
     }
     public interface OnErrorListener{
         void onEror(String msg);
+    }
+
+    public interface OnProgressListener{
+        void onProgress(int progress);
     }
 
     public NativePlayer(){
@@ -127,6 +140,15 @@ public class NativePlayer implements SurfaceHolder.Callback {
         }
     }
 
+    /**
+     * C++ 层调用
+     * @param progress
+     */
+    public void onProgress(int progress){
+        if(onProgressListener != null){
+            onProgressListener.onProgress(progress);
+        }
+    }
 
 
     public void prepare(){
@@ -156,6 +178,8 @@ public class NativePlayer implements SurfaceHolder.Callback {
     private native void setSufaceNative(Surface suface);
 
     private native int getDurationNative();
+
+    private native void seekNative(int progress);
 
 
 }

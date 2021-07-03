@@ -11,6 +11,7 @@ extern "C"{
 };
 #include "util.h"
 #include "SafeQueue.h"
+#include "JNICallbackHelper.h"
 
 class BaseChannel {
 
@@ -21,6 +22,8 @@ public:
     SafeQueue<AVFrame *> frames;
     bool isPlaying;
     AVRational  base_time;
+    JNICallbackHelper* helper = 0;
+
     BaseChannel(int index,AVCodecContext *codeContext,AVRational base_time);
     virtual ~BaseChannel();
 
@@ -39,6 +42,9 @@ public:
         }
     }
 
+    void setJNICallbakcHelper(JNICallbackHelper *jniCallbakcHelper) {
+        this->helper = jniCallbakcHelper;
+    }
 };
 
 

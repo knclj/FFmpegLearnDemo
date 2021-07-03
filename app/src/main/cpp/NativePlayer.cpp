@@ -74,8 +74,10 @@ void NativePlayer::prepare_() {
            int fps = av_q2d(fps_rational);
             videoChannel = new VideoChannel(i,codecContext,base_time,fps);
             videoChannel->setRenderCallback(renderCallback);
+            videoChannel->setJNICallbakcHelper(helper);
        }else if(codec->type == AVMEDIA_TYPE_AUDIO){
             audioChannel = new AudioChannel(i, codecContext,base_time);
+            audioChannel->setJNICallbakcHelper(helper);
        }
     }//for end
     if(!videoChannel && !audioChannel) {

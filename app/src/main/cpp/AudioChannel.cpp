@@ -241,6 +241,10 @@ void AudioChannel::play() {
 
 }
 
+/**
+ * 播放时候被循环调用
+ * @return
+ */
 int AudioChannel::getPCMSize() {
     int format_data_pcm = 0;
     AVFrame  *frame;
@@ -259,6 +263,10 @@ int AudioChannel::getPCMSize() {
     }
 
     audio_time = frame->best_effort_timestamp*av_q2d(base_time);
+
+    if(helper){
+        helper->onProgress(THREAD_CHILD,audio_time);
+    }
 
     av_frame_unref(frame);
     releaseAVFrame(&frame);
